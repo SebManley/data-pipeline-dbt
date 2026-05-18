@@ -1,18 +1,17 @@
 """
 load_source_data.py
 
-Loads the full Olist CSV dataset into the PostgreSQL raw schema.
-Use this when you want to run dbt against the complete 100k-row dataset
-instead of the seed sample.
-
-Download the dataset from:
-  https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
-Unzip into a local directory and pass it via --data-dir.
+Downloads the full Olist Brazilian e-commerce dataset from Kaggle via API,
+then loads all tables into the PostgreSQL raw schema.
 
 Usage:
-  python scripts/load_source_data.py --data-dir ./data/olist/
+  python scripts/load_source_data.py                          # download + load
+  python scripts/load_source_data.py --skip-download          # load already-downloaded files
+  python scripts/load_source_data.py --download-dir ./data/   # custom download path
 
 Environment variables (set in .env):
+  KAGGLE_USERNAME   — from https://www.kaggle.com/settings > API
+  KAGGLE_KEY        — from https://www.kaggle.com/settings > API
   POSTGRES_HOST, POSTGRES_PORT, POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD
 """
 
@@ -29,6 +28,9 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 log = logging.getLogger(__name__)
 
+KAGGLE_DATASET = 'olistbr/brazilian-ecommerce'
+DEFAULT_DOWNLOAD_DIR = Path('./data/olist')
+
 TABLES = {
   'olist_orders':      'olist_orders_dataset.csv',
   'olist_order_items': 'olist_order_items_dataset.csv',
@@ -38,6 +40,18 @@ TABLES = {
   'olist_payments':    'olist_order_payments_dataset.csv',
   'olist_reviews':     'olist_order_reviews_dataset.csv',
 }
+
+
+def download_dataset(download_dir: Path) -> Path:
+  """Download and unzip the Olist dataset from Kaggle. Returns the download directory."""
+  import kaggle  # noqa: PLC0415 — import deferred so missing package gives a clear error
+
+  download_dir.mkdir(parents=True, exist_ok=True)
+  log.info('Downloading %s to %s ...', KAGGLE_DATASET, download_dir)
+  kaggle.api.authenticate()
+  kaggle.api.dataset_download_files(KAGGLE_DATASET, path=str(download_dir), unzip=True)
+  log.info('Download complete.')
+  return download_dir
 
 
 def build_connection_string() -> str:
@@ -73,23 +87,31 @@ def load_table(engine, table_name: str, csv_path: Path, schema: str = 'raw') -> 
   log.info('  -> %d rows loaded into %s.%s', len(df), schema, table_name)
 
 
-def run(data_dir: Path, schema: str = 'raw') -> None:
+def run(download_dir: Path, schema: str, skip_download: bool) -> None:
+  if not skip_download:
+    download_dataset(download_dir)
+
   engine = create_engine(build_connection_string())
   ensure_schema(engine, schema)
 
   for table_name, filename in TABLES.items():
-    load_table(engine, table_name, data_dir / filename, schema=schema)
+    load_table(engine, table_name, download_dir / filename, schema=schema)
 
-  log.info('All tables loaded. Run `dbt run` to build models.')
+  log.info('All tables loaded. Run `dbt run --full-refresh` to rebuild models.')
 
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(description=__doc__)
   parser.add_argument(
-    '--data-dir',
+    '--download-dir',
     type=Path,
-    required=True,
-    help='Directory containing the Olist CSV files.',
+    default=DEFAULT_DOWNLOAD_DIR,
+    help=f'Directory to download/read Olist CSV files (default: {DEFAULT_DOWNLOAD_DIR}).',
+  )
+  parser.add_argument(
+    '--skip-download',
+    action='store_true',
+    help='Skip the Kaggle download step and load from --download-dir directly.',
   )
   parser.add_argument(
     '--schema',
@@ -97,4 +119,4 @@ if __name__ == '__main__':
     help='Target PostgreSQL schema (default: raw).',
   )
   args = parser.parse_args()
-  run(data_dir=args.data_dir, schema=args.schema)
+  run(download_dir=args.download_dir, schema=args.schema, skip_download=args.skip_download)

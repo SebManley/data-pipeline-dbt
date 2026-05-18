@@ -89,12 +89,23 @@ dbt docs generate && dbt docs serve
 
 ## Loading the full dataset
 
-Download the dataset from [Kaggle](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce),
-unzip it, then run:
+The script downloads the dataset automatically via the Kaggle API.
 
+1. Generate an API token at [kaggle.com/settings](https://www.kaggle.com/settings) → API → Create New Token
+2. Add the credentials to your `.env`:
+   ```
+   KAGGLE_USERNAME=your_username
+   KAGGLE_KEY=your_api_key
+   ```
+3. Run:
+   ```bash
+   python scripts/load_source_data.py          # downloads + loads all tables
+   dbt run --full-refresh                       # rebuild incrementals from scratch
+   ```
+
+If you already have the CSVs locally, skip the download:
 ```bash
-python scripts/load_source_data.py --data-dir ./data/olist/
-dbt run --full-refresh   # rebuild incrementals from scratch
+python scripts/load_source_data.py --skip-download --download-dir ./data/olist/
 ```
 
 ---
