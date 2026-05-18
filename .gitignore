@@ -1,0 +1,33 @@
+# Environment
+.env
+.env.*
+!.env.example
+
+# dbt
+target/
+dbt_packages/
+logs/
+.dbt/
+profiles.yml
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+dist/
+build/
+*.egg-info/
+
+# Data files (load separately — not committed)
+data/
+*.csv.gz
+seeds/*.csv.bak
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

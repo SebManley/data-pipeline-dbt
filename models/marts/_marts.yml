@@ -1,0 +1,75 @@
+version: 2
+
+models:
+  - name: fct_orders
+    description: >
+      One row per order. Incremental model — new orders are appended on each run
+      using purchased_at as the watermark. Joins staging models to add customer
+      location and order financials. Includes delivery performance KPIs.
+    config:
+      materialized: incremental
+    columns:
+      - name: order_id
+        tests:
+          - not_null
+          - unique
+      - name: customer_id
+        tests:
+          - not_null
+      - name: customer_unique_id
+        tests:
+          - not_null
+      - name: purchased_at
+        tests:
+          - not_null
+      - name: is_delivered
+        tests:
+          - not_null
+      - name: is_cancelled
+        tests:
+          - not_null
+      - name: order_total
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+
+  - name: dim_customers
+    description: >
+      One row per real customer (customer_unique_id). Deduplicates the source,
+      which creates a new customer_id for every order. Enriched with lifetime
+      value, order counts, and a repeat-customer flag.
+    columns:
+      - name: customer_unique_id
+        tests:
+          - not_null
+          - unique
+      - name: total_orders
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+      - name: lifetime_value
+        tests:
+          - not_null
+      - name: is_repeat_customer
+        tests:
+          - not_null
+
+  - name: fct_daily_revenue
+    description: >
+      One row per calendar day with revenue and order volume metrics.
+      Excludes cancelled orders. Useful as the base layer for a BI dashboard.
+    columns:
+      - name: order_date
+        tests:
+          - not_null
+          - unique
+      - name: gross_revenue
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+      - name: order_count
+        tests:
+          - not_null

@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  dbt:
+    name: dbt seed / run / test
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: olist
+          POSTGRES_USER: dbt
+          POSTGRES_PASSWORD: dbt
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Write dbt profiles
+        run: |
+          mkdir -p ~/.dbt
+          cat > ~/.dbt/profiles.yml <<EOF
+          data_pipeline_dbt:
+            target: ci
+            outputs:
+              ci:
+                type: postgres
+                host: localhost
+                port: 5432
+                user: dbt
+                password: dbt
+                dbname: olist
+                schema: public
+                threads: 4
+          EOF
+
+      - name: dbt deps
+        run: dbt deps
+
+      - name: dbt seed
+        run: dbt seed --target ci
+
+      - name: dbt run
+        run: dbt run --target ci
+
+      - name: dbt test
+        run: dbt test --target ci

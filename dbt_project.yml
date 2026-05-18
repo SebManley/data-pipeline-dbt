@@ -1,0 +1,42 @@
+name: data_pipeline_dbt
+version: '1.0.0'
+config-version: 2
+
+profile: data_pipeline_dbt
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  data_pipeline_dbt:
+    staging:
+      +materialized: view
+      +schema: staging
+    marts:
+      +materialized: table
+      +schema: marts
+
+seeds:
+  data_pipeline_dbt:
+    +schema: raw
+    olist_orders:
+      +column_types:
+        order_purchase_timestamp: timestamp
+        order_approved_at: timestamp
+        order_delivered_carrier_date: timestamp
+        order_delivered_customer_date: timestamp
+        order_estimated_delivery_date: timestamp
+    olist_order_items:
+      +column_types:
+        shipping_limit_date: timestamp
+        price: numeric
+        freight_value: numeric

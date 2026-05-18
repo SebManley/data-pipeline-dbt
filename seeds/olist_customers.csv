@@ -1,0 +1,31 @@
+customer_id,customer_unique_id,customer_zip_code_prefix,customer_city,customer_state
+cst_001,unq_001,01310,sao paulo,SP
+cst_002,unq_002,04178,sao paulo,SP
+cst_003,unq_003,20040,rio de janeiro,RJ
+cst_004,unq_004,30130,belo horizonte,MG
+cst_005,unq_005,80010,curitiba,PR
+cst_006,unq_006,90010,porto alegre,RS
+cst_007,unq_007,41810,salvador,BA
+cst_008,unq_008,60160,fortaleza,CE
+cst_009,unq_009,50010,recife,PE
+cst_010,unq_010,69010,manaus,AM
+cst_011,unq_011,04551,sao paulo,SP
+cst_012,unq_012,21340,rio de janeiro,RJ
+cst_013,unq_013,31010,belo horizonte,MG
+cst_014,unq_014,80250,curitiba,PR
+cst_015,unq_015,90110,porto alegre,RS
+cst_016,unq_016,41730,salvador,BA
+cst_017,unq_017,60175,fortaleza,CE
+cst_018,unq_018,52070,recife,PE
+cst_019,unq_019,69040,manaus,AM
+cst_020,unq_020,13010,campinas,SP
+cst_021,unq_021,49010,aracaju,SE
+cst_022,unq_022,74010,goiania,GO
+cst_023,unq_023,76801,porto velho,RO
+cst_024,unq_024,64000,teresina,PI
+cst_025,unq_025,58010,joao pessoa,PB
+cst_026,unq_001,01310,sao paulo,SP
+cst_027,unq_005,80010,curitiba,PR
+cst_028,unq_010,69010,manaus,AM
+cst_029,unq_015,90110,porto alegre,RS
+cst_030,unq_020,13010,campinas,SP

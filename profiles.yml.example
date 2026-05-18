@@ -1,0 +1,15 @@
+# Copy this file to ~/.dbt/profiles.yml and fill in your credentials.
+# Never commit profiles.yml — it is gitignored.
+
+data_pipeline_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: localhost
+      port: 5432
+      user: dbt
+      password: dbt
+      dbname: olist
+      schema: public   # base schema — staging/marts/raw are set per-model in dbt_project.yml
+      threads: 4
