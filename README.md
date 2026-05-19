@@ -93,7 +93,7 @@ dbt docs generate && dbt docs serve
 
 ---
 
-## Dashboard
+## Dashboard example
 
 ![Metabase Dashboard](assets/dashboard.png)
 
