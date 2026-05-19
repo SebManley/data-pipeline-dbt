@@ -5,9 +5,8 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue)
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED)
 
-A production-quality dbt pipeline built on the public **Olist Brazilian E-commerce** dataset
-(~100k orders). Demonstrates the patterns I apply to every client engagement: clean model
-layering, incremental loads, comprehensive testing, and automated CI.
+A dbt pipeline built on the public **Olist Brazilian E-commerce** dataset
+(~100k orders). Demonstrating clean model layering, incremental loads, comprehensive testing, and automated CI.
 
 ---
 
