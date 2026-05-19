@@ -96,6 +96,8 @@ dbt docs generate && dbt docs serve
 
 ## Visualisation
 
+![Metabase Dashboard](assets/dashboard.png)
+
 Metabase is included in the Docker Compose setup and starts automatically with `docker compose up -d`.
 
 **First-time setup:**
