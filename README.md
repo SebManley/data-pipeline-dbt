@@ -10,7 +10,7 @@ A dbt pipeline built on the public **Olist Brazilian E-commerce** dataset
 
 ---
 
-## Project structure
+## Project Highlights
 
 | Pattern | Where |
 |---|---|
@@ -93,7 +93,7 @@ dbt docs generate && dbt docs serve
 
 ---
 
-## Visualisation
+## Dashboard
 
 ![Metabase Dashboard](assets/dashboard.png)
 
