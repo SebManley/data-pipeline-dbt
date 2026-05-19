@@ -114,14 +114,6 @@ Metabase is included in the Docker Compose setup and starts automatically with `
 
 4. Set the default schema to `marts`
 
-**Suggested dashboards:**
-
-| Dashboard | Source table | Key metrics |
-|---|---|---|
-| Daily Revenue | `fct_daily_revenue` | Revenue over time, order volume, avg order value |
-| Order Performance | `fct_orders` | Delivery rate, avg days to deliver, cancellation rate |
-| Customer Segments | `dim_customers` | Repeat vs one-time buyers, lifetime value by state |
-
 ---
 
 ## Loading the full dataset
