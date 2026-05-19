@@ -44,6 +44,7 @@ TABLES = {
 
 def download_dataset(download_dir: Path) -> Path:
   """Download and unzip the Olist dataset from Kaggle. Returns the download directory."""
+  # pyrefly: ignore [missing-import]
   import kaggle  # noqa: PLC0415 — import deferred so missing package gives a clear error
 
   download_dir.mkdir(parents=True, exist_ok=True)
@@ -76,6 +77,8 @@ def load_table(engine, table_name: str, csv_path: Path, schema: str = 'raw') -> 
 
   log.info('Loading %s from %s ...', table_name, csv_path.name)
   df = pd.read_csv(csv_path, low_memory=False)
+  with engine.begin() as conn:
+    conn.execute(text(f'DROP TABLE IF EXISTS {schema}.{table_name} CASCADE'))
   df.to_sql(
     table_name,
     engine,
