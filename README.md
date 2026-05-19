@@ -1,7 +1,7 @@
 # data-pipeline-dbt
 
 ![CI](https://github.com/SebManley/data-pipeline-dbt/actions/workflows/ci.yml/badge.svg)
-![dbt](https://img.shields.io/badge/dbt-1.8-orange)
+![dbt](https://img.shields.io/badge/dbt-1.11-orange)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue)
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED)
 
@@ -45,8 +45,7 @@ raw.olist_order_items─┘                            │         └──► 
 
 ### Prerequisites
 - Docker Desktop
-- Python 3.11+
-- dbt Core (`pip install -r requirements.txt`)
+- Python 3.13+
 
 ### 1. Clone and configure
 
@@ -58,19 +57,27 @@ cp .env.example .env
 cp profiles.yml.example ~/.dbt/profiles.yml
 ```
 
-### 2. Start PostgreSQL
+### 2. Set up Python environment
 
 ```bash
-docker-compose up -d
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
 ```
 
-### 3. Install dbt packages
+### 3. Start PostgreSQL
+
+```bash
+docker compose up -d
+```
+
+### 4. Install dbt packages
 
 ```bash
 dbt deps
 ```
 
-### 4. Seed sample data and run models
+### 5. Seed sample data and run models
 
 ```bash
 dbt seed     # loads 30-row sample into raw schema
@@ -78,7 +85,7 @@ dbt run      # builds staging views + mart tables
 dbt test     # runs all generic and relationship tests
 ```
 
-### 5. Explore the lineage graph
+### 6. Explore the lineage graph
 
 ```bash
 dbt docs generate && dbt docs serve
@@ -99,8 +106,8 @@ The script downloads the dataset automatically via the Kaggle API.
    ```
 3. Run:
    ```bash
-   python scripts/load_source_data.py          # downloads + loads all tables
-   dbt run --full-refresh                       # rebuild incrementals from scratch
+   python scripts/load_source_data.py    # downloads + loads all tables
+   dbt run --full-refresh                # rebuild incrementals from scratch
    ```
 
 If you already have the CSVs locally, skip the download:
@@ -139,11 +146,11 @@ python scripts/load_source_data.py --skip-download --download-dir ./data/olist/
 
 ## Schema layout
 
-| Schema    | Contains                     | Materialization |
-|-----------|------------------------------|-----------------|
-| `raw`     | Seeded / loaded source tables | seed            |
-| `staging` | `stg_olist__*` models        | view            |
-| `marts`   | `fct_*`, `dim_*` models      | table / incremental |
+| Schema | Contains | Materialization |
+|---|---|---|
+| `raw` | Seeded / loaded source tables | seed |
+| `staging` | `stg_olist__*` models | view |
+| `marts` | `fct_*`, `dim_*` models | table / incremental |
 
 ---
 
