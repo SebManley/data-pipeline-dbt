@@ -105,7 +105,7 @@ Metabase is included in the Docker Compose setup and starts automatically with `
 
 | Field | Value |
 |---|---|
-| Host | `localhost` |
+| Host | `postgres` |
 | Port | `5432` |
 | Database | `olist` |
 | Username | `dbt` |
