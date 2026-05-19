@@ -16,5 +16,17 @@ services:
       timeout: 5s
       retries: 5
 
+  metabase:
+    image: metabase/metabase:latest
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - metabase-data:/metabase.db
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   pgdata:
+  metabase-data:

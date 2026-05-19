@@ -94,6 +94,35 @@ dbt docs generate && dbt docs serve
 
 ---
 
+## Visualisation
+
+Metabase is included in the Docker Compose setup and starts automatically with `docker compose up -d`.
+
+**First-time setup:**
+1. Open http://localhost:3000
+2. Create an admin account when prompted
+3. Add a PostgreSQL database connection:
+
+| Field | Value |
+|---|---|
+| Host | `localhost` |
+| Port | `5432` |
+| Database | `olist` |
+| Username | `dbt` |
+| Password | `dbt` |
+
+4. Set the default schema to `marts`
+
+**Suggested dashboards:**
+
+| Dashboard | Source table | Key metrics |
+|---|---|---|
+| Daily Revenue | `fct_daily_revenue` | Revenue over time, order volume, avg order value |
+| Order Performance | `fct_orders` | Delivery rate, avg days to deliver, cancellation rate |
+| Customer Segments | `dim_customers` | Repeat vs one-time buyers, lifetime value by state |
+
+---
+
 ## Loading the full dataset
 
 The script downloads the dataset automatically via the Kaggle API.
