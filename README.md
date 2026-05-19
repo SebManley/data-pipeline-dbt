@@ -10,7 +10,7 @@ A dbt pipeline built on the public **Olist Brazilian E-commerce** dataset
 
 ---
 
-## What this project demonstrates
+## Project structure
 
 | Pattern | Where |
 |---|---|
