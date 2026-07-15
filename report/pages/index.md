@@ -2,16 +2,20 @@
 title: Olist E-Commerce Report
 ---
 
-Built with [dbt](https://github.com/SebManley/data-pipeline-dbt) on the full Olist Brazilian
-E-Commerce dataset (~100k orders, 2016–2018), rendered as a static site with
-[Evidence](https://evidence.dev). Source: `marts.fct_daily_revenue`, `marts.fct_orders`,
-`marts.dim_customers`, `marts.fct_product_category_revenue`.
+An analysis of Olist's Brazilian e-commerce marketplace — revenue trends, order
+performance, product category breakdown, and customer behavior across roughly
+100,000 orders between 2016 and 2018.
 
+<div class="mt-6">
 <Alert status=info>
-Data covers 2016-09 through 2018-08. The source dataset's final ~6 weeks contain only a
-sparse trailing sample rather than complete data, so orders placed on/after 2018-09-01 are
-excluded from all marts to avoid a misleading drop-off in the trend charts below.
+Data covers September 2016 through August 2018. The source dataset's final ~6 weeks
+contain only a sparse trailing sample rather than complete records, so orders placed
+on or after September 1, 2018 are excluded from every chart below to avoid a
+misleading drop-off.
 </Alert>
+</div>
+
+<div class="mt-16">
 
 ## Overview
 
@@ -29,12 +33,14 @@ SELECT
 FROM dim_customers
 ```
 
-<Grid cols={4}>
+<div class="mt-6">
+<Grid cols={4} gapSize="lg">
 <BigValue data={revenue_overview} value=total_delivered_orders fmt=num0 title="Total Delivered Orders"/>
 <BigValue data={revenue_overview} value=avg_order_value fmt=usd2 title="Average Order Value"/>
 <BigValue data={revenue_overview} value=total_revenue fmt=usd0 title="Total Revenue"/>
 <BigValue data={customer_overview} value=repeat_rate_pct fmt=pct1 title="Repeat Customer Rate"/>
 </Grid>
+</div>
 
 ```sql monthly_revenue
 SELECT
@@ -46,13 +52,14 @@ GROUP BY 1
 ORDER BY 1
 ```
 
-<Grid cols={2}>
+<div class="mt-12">
+<Grid cols={2} gapSize="lg">
 <LineChart
     data={monthly_revenue}
     x=month
     y=gross_revenue
     title="Revenue Over Time"
-    subtitle="Monthly, excl. cancelled"
+    subtitle="Monthly, excludes cancelled orders"
     yFmt=usd0
 />
 <BarChart
@@ -60,9 +67,10 @@ ORDER BY 1
     x=month
     y=order_count
     title="Order Volume by Month"
-    subtitle="Monthly, excl. cancelled"
+    subtitle="Monthly, excludes cancelled orders"
 />
 </Grid>
+</div>
 
 ```sql customer_segments
 SELECT
@@ -72,6 +80,7 @@ FROM dim_customers
 GROUP BY 1
 ```
 
+<div class="mt-12">
 <BarChart
     data={customer_segments}
     x=segment
@@ -79,6 +88,13 @@ GROUP BY 1
     title="Repeat vs One-Time Customers"
     swapXY=true
 />
+</div>
+
+</div>
+
+---
+
+<div class="mt-16">
 
 ## Product Category Performance
 
@@ -92,6 +108,7 @@ ORDER BY revenue DESC
 LIMIT 10
 ```
 
+<div class="mt-6">
 <BarChart
     data={top_categories}
     x=product_category
@@ -100,6 +117,7 @@ LIMIT 10
     yFmt=usd0
     swapXY=true
 />
+</div>
 
 ```sql all_categories
 SELECT
@@ -111,6 +129,8 @@ FROM fct_product_category_revenue
 ORDER BY revenue DESC
 ```
 
+<div class="mt-12">
+
 All 74 categories:
 
 <DataTable data={all_categories} rows={10} search={true}>
@@ -119,6 +139,14 @@ All 74 categories:
     <Column id=item_count title="Items Sold"/>
     <Column id=revenue title="Revenue" fmt=usd0/>
 </DataTable>
+
+</div>
+
+</div>
+
+---
+
+<div class="mt-16">
 
 ## Order Performance
 
@@ -134,12 +162,14 @@ SELECT
 FROM fct_orders
 ```
 
-<Grid cols={4}>
+<div class="mt-6">
+<Grid cols={4} gapSize="lg">
 <BigValue data={order_kpis} value=delivery_rate_pct fmt=pct1 title="Delivery Rate"/>
 <BigValue data={order_kpis} value=on_time_rate_pct fmt=pct1 title="On-Time Rate"/>
 <BigValue data={order_kpis} value=cancellation_rate_pct fmt=pct1 title="Cancellation Rate"/>
 <BigValue data={order_kpis} value=avg_days_to_deliver fmt=num1 title="Avg Days to Deliver"/>
 </Grid>
+</div>
 
 ```sql order_status_breakdown
 SELECT
@@ -156,7 +186,8 @@ FROM fct_orders
 WHERE is_delivered AND days_to_deliver BETWEEN 0 AND 60
 ```
 
-<Grid cols={2}>
+<div class="mt-12">
+<Grid cols={2} gapSize="lg">
 <BarChart
     data={order_status_breakdown}
     x=order_status
@@ -172,6 +203,13 @@ WHERE is_delivered AND days_to_deliver BETWEEN 0 AND 60
     xAxisTitle="Days to deliver"
 />
 </Grid>
+</div>
+
+</div>
+
+---
+
+<div class="mt-16">
 
 ## Customer Insights
 
@@ -196,7 +234,8 @@ GROUP BY 1
 ORDER BY 1
 ```
 
-<Grid cols={2}>
+<div class="mt-6 mb-16">
+<Grid cols={2} gapSize="lg">
 <BarChart
     data={ltv_by_state}
     x=state_code
@@ -213,3 +252,6 @@ ORDER BY 1
     subtitle="First-time customers per month"
 />
 </Grid>
+</div>
+
+</div>
