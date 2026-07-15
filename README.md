@@ -29,14 +29,12 @@ layering, incremental loads, comprehensive testing, and automated CI.
 ## Data lineage
 
 ```
-raw.olist_customers ──┐
-                      ├──► stg_olist__customers ──┐
-raw.olist_orders ─────┤                            ├──► fct_orders (incremental)
-                      ├──► stg_olist__orders ──────┤         │
-raw.olist_order_items─┘                            │         └──► fct_daily_revenue
-                       stg_olist__order_items ─────┘
-                                                             fct_orders
-                                                                  └──► dim_customers
+raw.olist_customers ──► stg_olist__customers ──┐
+raw.olist_orders ─────► stg_olist__orders ─────┼──► fct_orders (incremental) ──┬──► fct_daily_revenue
+raw.olist_order_items ► stg_olist__order_items ┘        │                     └──► dim_customers
+                                                         │
+raw.olist_products ───────────┐                         │
+raw.olist_category_translation┴► stg_olist__products ───┴──(joined with stg_olist__order_items)──► fct_product_category_revenue
 ```
 
 ---
@@ -94,11 +92,14 @@ dbt docs generate && dbt docs serve
 
 ---
 
-## Visualisation
+## Live Report
 
-![Metabase Dashboard](assets/dashboard.png)
+**[View the live report →](https://olist-data-pipeline-dbt.netlify.app/)**
 
-Metabase is included in the Docker Compose setup and starts automatically with `docker compose up -d`.
+## Local exploration with Metabase
+
+For ad hoc querying against local data, Metabase is included in the Docker Compose setup
+and starts automatically with `docker compose up -d`.
 
 **First-time setup:**
 1. Open http://localhost:3000
@@ -157,16 +158,23 @@ python scripts/load_source_data.py --skip-download --download-dir ./data/olist/
 │   │   ├── _stg_olist.yml
 │   │   ├── stg_olist__customers.sql
 │   │   ├── stg_olist__orders.sql
-│   │   └── stg_olist__order_items.sql
+│   │   ├── stg_olist__order_items.sql
+│   │   └── stg_olist__products.sql     # category, English translation w/ fallback
 │   └── marts/           # tables / incrementals — business-ready
 │       ├── _marts.yml
-│       ├── fct_orders.sql          (incremental, unique_key = order_id)
-│       ├── fct_daily_revenue.sql   (daily revenue aggregation)
-│       └── dim_customers.sql       (one row per real customer + LTV)
+│       ├── fct_orders.sql              (incremental, unique_key = order_id)
+│       ├── fct_daily_revenue.sql       (daily revenue aggregation)
+│       ├── dim_customers.sql           (one row per real customer + LTV)
+│       └── fct_product_category_revenue.sql  (revenue/orders per category)
 ├── seeds/               # 30-row sample for local dev and CI
 ├── macros/              # generate_schema_name override
 ├── scripts/
 │   └── load_source_data.py
+├── report/              # Evidence static report — see "Live Report" above
+│   ├── pages/index.md   # daily revenue, order performance, customer segments
+│   └── sources/olist/   # per-mart queries + Postgres connection
+├── deploy/
+│   └── netlify-deploy.md
 ├── .github/workflows/ci.yml
 ├── docker-compose.yml
 ├── dbt_project.yml
@@ -208,3 +216,8 @@ by Olist, licensed under CC BY-NC-SA 4.0.
 
 The seeds in this repo are a 30-order sample for local development. The full dataset
 (~100k orders, 2016–2018) is loaded via `scripts/load_source_data.py`.
+
+The source data's final ~6 weeks (orders placed on/after 2018-09-01) are a sparse trailing
+sample rather than complete data — volume tapers off day-by-day instead of stopping at a
+real business event. The marts exclude orders on/after that date (`max_complete_order_date`
+in `dbt_project.yml`) so trend charts aren't skewed by a misleading drop-off.

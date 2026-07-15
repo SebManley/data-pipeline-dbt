@@ -1,0 +1,9 @@
+name: olist
+type: postgres
+options:
+  host: localhost
+  port: 5432
+  database: olist
+  user: dbt
+  password: dbt
+  ssl: false
