@@ -34,7 +34,7 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['delivered', 'shipped', 'cancelled', 'processing',
+              values: ['delivered', 'shipped', 'canceled', 'processing',
                        'approved', 'unavailable', 'invoiced', 'created']
       - name: purchased_at
         tests:
@@ -57,6 +57,9 @@ models:
       - name: order_item_id
         tests:
           - not_null
+      - name: product_id
+        tests:
+          - not_null
       - name: price
         tests:
           - not_null
@@ -66,5 +69,18 @@ models:
         tests:
           - not_null
       - name: line_total
+        tests:
+          - not_null
+
+  - name: stg_olist__products
+    description: >
+      One row per product_id with its category, translated to English where
+      a translation exists (falls back to the Portuguese name otherwise).
+    columns:
+      - name: product_id
+        tests:
+          - not_null
+          - unique
+      - name: product_category
         tests:
           - not_null

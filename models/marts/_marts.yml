@@ -73,3 +73,25 @@ models:
       - name: order_count
         tests:
           - not_null
+
+  - name: fct_product_category_revenue
+    description: >
+      One row per product category (English name, falling back to Portuguese
+      where no translation exists). Excludes cancelled orders. Line items with
+      no matching product roll up into an 'unknown' category rather than being
+      dropped.
+    columns:
+      - name: product_category
+        tests:
+          - not_null
+          - unique
+      - name: order_count
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+      - name: revenue
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"

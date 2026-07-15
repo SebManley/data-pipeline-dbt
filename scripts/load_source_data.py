@@ -32,13 +32,14 @@ KAGGLE_DATASET = 'olistbr/brazilian-ecommerce'
 DEFAULT_DOWNLOAD_DIR = Path('./data/olist')
 
 TABLES = {
-  'olist_orders':      'olist_orders_dataset.csv',
-  'olist_order_items': 'olist_order_items_dataset.csv',
-  'olist_customers':   'olist_customers_dataset.csv',
-  'olist_products':    'olist_products_dataset.csv',
-  'olist_sellers':     'olist_sellers_dataset.csv',
-  'olist_payments':    'olist_order_payments_dataset.csv',
-  'olist_reviews':     'olist_order_reviews_dataset.csv',
+  'olist_orders':               'olist_orders_dataset.csv',
+  'olist_order_items':          'olist_order_items_dataset.csv',
+  'olist_customers':            'olist_customers_dataset.csv',
+  'olist_products':             'olist_products_dataset.csv',
+  'olist_sellers':              'olist_sellers_dataset.csv',
+  'olist_payments':             'olist_order_payments_dataset.csv',
+  'olist_reviews':              'olist_order_reviews_dataset.csv',
+  'olist_category_translation': 'product_category_name_translation.csv',
 }
 
 
