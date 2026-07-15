@@ -5,13 +5,12 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue)
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED)
 
-A production-quality dbt pipeline built on the public **Olist Brazilian E-commerce** dataset
-(~100k orders). Demonstrates the patterns I apply to every client engagement: clean model
-layering, incremental loads, comprehensive testing, and automated CI.
+A dbt pipeline built on the public **Olist Brazilian E-commerce** dataset
+(~100k orders). Demonstrating clean model layering, incremental loads, comprehensive testing, and automated CI.
 
 ---
 
-## What this project demonstrates
+## Project Highlights
 
 | Pattern | Where |
 |---|---|
@@ -115,14 +114,6 @@ and starts automatically with `docker compose up -d`.
 | Password | `dbt` |
 
 4. Set the default schema to `marts`
-
-**Suggested dashboards:**
-
-| Dashboard | Source table | Key metrics |
-|---|---|---|
-| Daily Revenue | `fct_daily_revenue` | Revenue over time, order volume, avg order value |
-| Order Performance | `fct_orders` | Delivery rate, avg days to deliver, cancellation rate |
-| Customer Segments | `dim_customers` | Repeat vs one-time buyers, lifetime value by state |
 
 ---
 
