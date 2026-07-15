@@ -8,7 +8,7 @@
 A dbt pipeline built on the public **Olist Brazilian E-commerce** dataset
 (~100k orders). Demonstrating clean model layering, incremental loads, comprehensive testing, and automated CI.
 
-**[View the live report →](https://olist-data-pipeline-dbt.netlify.app/)**
+**View the live report →** [https://olist-data-pipeline-dbt.netlify.app/](https://olist-data-pipeline-dbt.netlify.app/)
 
 ---
 
