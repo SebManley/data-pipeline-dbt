@@ -19,9 +19,10 @@ WITH orders AS (
     delivered_at,
     estimated_delivery_at
   FROM {{ ref('stg_olist__orders') }}
+  WHERE purchased_at < '{{ var("max_complete_order_date") }}'
   {% if is_incremental() %}
     -- Only process orders newer than the latest already loaded
-    WHERE purchased_at > (SELECT MAX(purchased_at) FROM {{ this }})
+    AND purchased_at > (SELECT MAX(purchased_at) FROM {{ this }})
   {% endif %}
 ),
 

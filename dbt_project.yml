@@ -25,6 +25,13 @@ models:
       +materialized: table
       +schema: marts
 
+vars:
+  # The source dataset's final ~6 weeks (from 2018-09-01) contain only a sparse trailing
+  # sample rather than complete data — order volume tapers off day-by-day rather than
+  # stopping at a real business event. Marts exclude orders placed on/after this date so
+  # trend charts aren't skewed by a misleading drop-off. See fct_orders.sql.
+  max_complete_order_date: '2018-09-01'
+
 seeds:
   data_pipeline_dbt:
     +schema: raw

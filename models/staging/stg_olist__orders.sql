@@ -26,7 +26,7 @@ renamed AS (
       THEN TRUE ELSE FALSE
     END AS is_delivered,
 
-    CASE WHEN order_status IN ('cancelled', 'unavailable')
+    CASE WHEN order_status IN ('canceled', 'unavailable')
       THEN TRUE ELSE FALSE
     END AS is_cancelled
 
