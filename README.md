@@ -5,8 +5,9 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue)
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED)
 
-A dbt pipeline built on the public **Olist Brazilian E-commerce** dataset
-(~100k orders). Demonstrating clean model layering, incremental loads, comprehensive testing, and automated CI.
+A dbt pipeline for the public **Olist Brazilian E-commerce** dataset (~100k orders,
+2016–2018): source data lands in PostgreSQL, moves through staging and mart layers,
+and is tested and rebuilt automatically in CI.
 
 **View the live report →** [https://olist-data-pipeline-dbt.netlify.app/](https://olist-data-pipeline-dbt.netlify.app/)
 
@@ -14,16 +15,47 @@ A dbt pipeline built on the public **Olist Brazilian E-commerce** dataset
 
 ## Project Highlights
 
-| Pattern | Where |
-|---|---|
-| Source → Staging → Mart layering | `models/staging/`, `models/marts/` |
-| Incremental model (watermark strategy) | `fct_orders.sql` |
-| Generic + expression tests on every model | `_sources.yml`, `_stg_olist.yml`, `_marts.yml` |
-| FK relationship tests across layers | `_sources.yml` → customer / order relationships |
-| Custom schema macro (raw / staging / marts) | `macros/generate_schema_name.sql` |
-| Docker Compose local environment | `docker-compose.yml` |
-| CI: seed → run → test on every push | `.github/workflows/ci.yml` |
-| Full-dataset loader for Kaggle CSVs | `scripts/load_source_data.py` |
+- **Layered model architecture.** Raw sources flow through staging models that only
+  rename and cast, then into business-ready marts where all joins, aggregations, and
+  logic live — keeping each layer's responsibility clean and independently testable.
+
+- **Incremental loading.** `fct_orders` uses a watermark strategy, processing only
+  orders newer than what's already loaded on each run, with upserts handled via a
+  unique key — the pattern used for any high-volume fact table in production.
+
+- **Comprehensive testing.** Every model carries not-null, uniqueness, and
+  cross-layer relationship tests, plus expression tests for business rules like
+  non-negative order totals, so a broken pipeline fails loudly in CI instead of
+  silently corrupting downstream data.
+
+- **Custom schema routing.** A macro maps models to `raw`, `staging`, and `marts`
+  schemas based on their folder rather than dbt's default target-based naming,
+  keeping the database organized the same way the codebase is.
+
+- **Fully containerized local environment.** PostgreSQL and Metabase both spin up
+  via Docker Compose, so a fresh clone is running end-to-end in minutes with no
+  manual database setup.
+
+- **Automated CI.** Every push and pull request seeds sample data, builds the full
+  model set, and runs the test suite in GitHub Actions, catching breakages before
+  they reach `main`.
+
+- **Production-scale data loading.** A loader script pulls the full ~100k-order
+  dataset from Kaggle's API, so local development and CI can run against a
+  lightweight seed while still supporting a full-scale rebuild on demand.
+
+---
+
+## Architecture
+
+Raw source tables sit in a `raw` schema. Staging models rename and cast columns
+with no business logic, and mart models — the layer everything downstream reads
+from — handle all joins, aggregations, and derived metrics.
+
+`fct_orders` loads incrementally: each run processes only orders newer than what's
+already in the table and upserts on `order_id`. `fct_daily_revenue`, `dim_customers`,
+and `fct_product_category_revenue` are all built on top of it, so they inherit its
+filters automatically rather than each needing their own copy of the same logic.
 
 ---
 
