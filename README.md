@@ -1,6 +1,6 @@
-# data-pipeline-dbt
+# ecommerce-analytics-pipeline
 
-![CI](https://github.com/SebManley/data-pipeline-dbt/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/SebManley/ecommerce-analytics-pipeline/actions/workflows/ci.yml/badge.svg)
 ![dbt](https://img.shields.io/badge/dbt-1.11-orange)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue)
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED)
@@ -81,8 +81,8 @@ raw.olist_category_translation┴► stg_olist__products ───┴──(join
 ### 1. Clone and configure
 
 ```bash
-git clone https://github.com/SebManley/data-pipeline-dbt.git
-cd data-pipeline-dbt
+git clone https://github.com/SebManley/ecommerce-analytics-pipeline.git
+cd ecommerce-analytics-pipeline
 
 cp .env.example .env
 cp profiles.yml.example ~/.dbt/profiles.yml

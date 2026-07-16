@@ -1,4 +1,4 @@
-# data-pipeline-dbt
+# ecommerce-analytics-pipeline
 
 Portfolio reference project showcasing production dbt patterns on the Olist Brazilian E-Commerce dataset (~100k orders, 2016–2018). Intended for Upwork client portfolio.
 
